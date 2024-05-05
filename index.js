@@ -81,7 +81,7 @@ app.post('/issues', async (req, res) => {
 
         // Insertar la nueva incidencia en la base de datos...
         const conn = await db.getConnection();
-        await conn.query('INSERT INTO issue (issue_type_id, location_id,  title, description, date) VALUES (?, ?, ?, ?, ?)', [ issue_type_id, location_id,  title, description, date]);
+        await conn.query('INSERT INTO issue (issue_type_id, location_id, title, description, date) VALUES (?, ?, ?, ?, ?)', [ issue_type_id, location_id,  title, description, date]);
         conn.release(); // Liberar la conexión
 
         // Devolver una respuesta indicando éxito
@@ -91,4 +91,14 @@ app.post('/issues', async (req, res) => {
         console.error('Error al crear incidencia:', error);
         res.status(500).json({ error: 'Ocurrió un error al procesar la solicitud' });
     }
+});
+
+//update status
+app.put('/issue/:id/:status', async (req, res) => {
+    const id = req.params.id;
+    const status = req.params.status;
+    const conn = await db.getConnection()
+    const [result] = await conn.query(`UPDATE issue SET status = ? WHERE id = ?;`, [status, id]);
+    conn.release()
+    res.json(result)
 });
