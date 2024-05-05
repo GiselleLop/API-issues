@@ -94,11 +94,20 @@ app.post('/issues', async (req, res) => {
 });
 
 //update status
-app.put('/issue/:id/:status', async (req, res) => {
-    const id = req.params.id;
-    const status = req.params.status;
+app.put('/issues', async (req, res) => {
+try{
+    const id = req.body.id;
+    const status = req.body.status;
+
     const conn = await db.getConnection()
-    const [result] = await conn.query(`UPDATE issue SET status = ? WHERE id = ?;`, [status, id]);
+    await conn.query(`UPDATE issue SET status = ? WHERE id = ?;`, [status, id]);
     conn.release()
-    res.json(result)
+    res.status(201).json({ message: 'Incidencia actualizada exitosamente' });
+  
+}
+catch {
+
+    console.error('Error al actualizar incidencia:', error);
+}
+  
 });
